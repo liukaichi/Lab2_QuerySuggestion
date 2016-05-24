@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 /**
  * Created by liukaichi on 5/24/2016.
@@ -15,7 +16,7 @@ public class SuggestionGUI extends JFrame
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout(50, 50));
 
-        JTextPane suggestions = new JTextPane ();
+        JTextPane suggestionsBox = new JTextPane ();
 
 
 
@@ -29,14 +30,28 @@ public class SuggestionGUI extends JFrame
 
                 if (e.getKeyChar() == KeyEvent.VK_SPACE || e.getKeyChar() == KeyEvent.VK_TAB || e.getKeyChar() == KeyEvent.VK_ENTER)
                 {
-                    
+                    KeywordTrie.Node node = Main.trie.findEntry(queryField.getText().trim());
+                    KeywordTrie.Node[] suggestionNodes = node.getCompletedChildren();
+
+                    ArrayList<String> suggestions = new ArrayList<String>();
+                    for (KeywordTrie.Node suggestionNode : suggestionNodes)
+                    {
+                        suggestions.add(suggestionNode.getWordRepresented());
+                    }
+
+                    String result = "";
+                    for (String suggestion : suggestions)
+                    {
+                        result += suggestion + "\n";
+                    }
+                    suggestionsBox.setText(result);
                 }
                 super.keyTyped(e);
             }
         });
 
         panel.add(queryField, BorderLayout.NORTH);
-        panel.add(suggestions, BorderLayout.CENTER);
+        panel.add(suggestionsBox, BorderLayout.CENTER);
         setContentPane(panel);
         setSize(600, 400);
         setVisible(true);

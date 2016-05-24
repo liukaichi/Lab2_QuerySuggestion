@@ -1,16 +1,17 @@
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by liukaichi on 5/10/2016.
  */
-public class KeywordTrie implements Serializable
+public class KeywordTrie
 {
     private static final int SPACE = -65;
     private static final int APOSTROPHE = -58;
     Node rootNode;
-    String lastEntry;
     String currentQuery;
 
     public KeywordTrie()
@@ -18,17 +19,49 @@ public class KeywordTrie implements Serializable
         rootNode = new Node();
     }
 
+    public Node findEntry(String word)
+    {
+        return findEntryRec(word, 0, rootNode);
+    }
+
+    private Node findEntryRec(String word, int index, Node node)
+    {
+        int childIndex = word.charAt(index) - 'a';
+        //check for special characters
+        if (childIndex < 0)
+        {
+            switch (childIndex)
+            {
+            case SPACE:
+                childIndex = 26;
+                break;
+            case APOSTROPHE:
+                childIndex = 27;
+                break;
+            default:
+                System.out.println("Problem character is: " + word.charAt(index));
+            }
+        }
+        //done if you've reached the end of the word, mark as completed, add to frequency
+        if (index == word.length() - 1)
+        {
+            return node.children[childIndex];
+        }
+
+        //else read in the character, and go further into the trie
+        Node nextNode = node.children[childIndex];
+        if (nextNode == null)
+        {
+            return null;
+        }
+        return findEntryRec(word, ++index, nextNode);
+    }
+
     public Node addEntry(String entry)
     {
 
-        lastEntry = entry;
-        return addQuery(entry);
-    }
-
-    private Node addQuery(String query)
-    {
-        StringBuilder sb = new StringBuilder(query.toLowerCase());
-        currentQuery = query;
+        StringBuilder sb = new StringBuilder(entry.toLowerCase());
+        currentQuery = entry;
         return addQueryRec(sb, 0, rootNode);
     }
 
@@ -41,16 +74,15 @@ public class KeywordTrie implements Serializable
         {
             switch (childIndex)
             {
-                case SPACE:
-                    childIndex = 26;
-                    break;
-                case APOSTROPHE:
-                    childIndex = 27;
-                    break;
+            case SPACE:
+                childIndex = 26;
+                break;
+            case APOSTROPHE:
+                childIndex = 27;
+                break;
             default:
                 System.out.println("Problem character is: " + query.charAt(index));
             }
-
 
         }
         //done if you've reached the end of the word, mark as completed, add to frequency
@@ -63,8 +95,8 @@ public class KeywordTrie implements Serializable
                 child = node.children[childIndex];
             }
             child.setComplete(true);
-            child.frequency++;
-            child.wordRepresented = new StringBuilder(currentQuery);
+            child.increaseFrequency();
+            child.setWordRepresented(currentQuery);
             return child;
         }
 
@@ -84,12 +116,12 @@ public class KeywordTrie implements Serializable
      * INNER CLASS
      ********/
 
-    public class Node implements Serializable
+    public class Node
     {
         Node children[] = new Node[28];
         int frequency = 0;
         boolean complete = false;
-        StringBuilder wordRepresented;
+        String wordRepresented;
         Map<String, Integer> modifiedTo;
 
         public Node()
@@ -135,6 +167,40 @@ public class KeywordTrie implements Serializable
         public void setModifiedTo(Map<String, Integer> modifiedTo)
         {
             this.modifiedTo = modifiedTo;
+        }
+
+        public void setWordRepresented(String wordRepresented)
+        {
+            this.wordRepresented = wordRepresented;
+        }
+
+        public void increaseFrequency()
+        {
+            frequency++;
+        }
+
+
+        public Node[] getCompletedChildren()
+        {
+            ArrayList<Node> result = new ArrayList<>();
+
+            for (Node child : children)
+            {
+                if (child != null)
+                {
+                    if (child.complete)
+                    {
+                        result.add(child);
+                    }
+                    result.addAll(Arrays.asList(child.getCompletedChildren()));
+                }
+            }
+            return result.toArray(new Node[0]);
+        }
+
+        public String getWordRepresented()
+        {
+            return wordRepresented;
         }
     }
 

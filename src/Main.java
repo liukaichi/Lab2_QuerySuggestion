@@ -13,8 +13,10 @@ import java.util.Scanner;
  */
 public class Main
 {
+    public static SuggestionController controller;
+    public static KeywordTrie trie;
     public static void main(String[] args){
-        //importData();
+        importData();
         loadGUI();
     }
 
@@ -34,14 +36,16 @@ public class Main
 
     private static void importData()
     {
-        KeywordTrie trie = new KeywordTrie();
+        trie = new KeywordTrie();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
         try
         {
             File dataFolder = new File("C:\\Users\\liukaichi\\Programming\\Query-Suggestion\\data");
             if (dataFolder.isDirectory())
             {
-                for (File file : dataFolder.listFiles())
+                // TODO: change this back!
+                //for (File file : dataFolder.listFiles())
+                File file = new File ("C:\\Users\\liukaichi\\Programming\\Query-Suggestion\\data\\Clean-Data-01.txt");
                 {
                     System.out.println("Reading file " + file.getPath());
                     Scanner scanner = new Scanner(new BufferedInputStream(new FileInputStream(file)));
@@ -108,6 +112,5 @@ public class Main
         {
             e.printStackTrace();
         }
-
     }
 }
