@@ -18,20 +18,11 @@ public class AOLEntry implements Serializable
     String query;
     Date time;
     int userID;
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+
 
     public AOLEntry(String entry)
     {
-        String info[] = entry.split("\\t");
-        userID = Integer.parseInt(info[0]);
-        query = info[1];
-        try
-        {
-            time = dateFormat.parse(info[2]);
-        } catch (ParseException e)
-        {
-            e.printStackTrace();
-        }
+
     }
 
     public String getQuery()

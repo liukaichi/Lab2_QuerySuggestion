@@ -10,7 +10,7 @@ public class KeywordTrie implements Serializable
     private static final int SPACE = -65;
     private static final int APOSTROPHE = -58;
     Node rootNode;
-    AOLEntry lastEntry;
+    String lastEntry;
     String currentQuery;
 
     public KeywordTrie()
@@ -18,23 +18,25 @@ public class KeywordTrie implements Serializable
         rootNode = new Node();
     }
 
-    public void addEntry(AOLEntry entry)
+    public Node addEntry(String entry)
     {
-        addQuery(entry.getQuery());
+
         lastEntry = entry;
+        return addQuery(entry);
     }
 
-    private void addQuery(String query)
+    private Node addQuery(String query)
     {
         StringBuilder sb = new StringBuilder(query.toLowerCase());
         currentQuery = query;
-        addQueryRec(sb, 0, rootNode);
+        return addQueryRec(sb, 0, rootNode);
     }
 
-    private void addQueryRec(StringBuilder query, int index, Node node)
+    private Node addQueryRec(StringBuilder query, int index, Node node)
     {
         int childIndex = query.charAt(index) - 'a';
-        //if (childIndex == -65) childIndex = 26;
+
+        //check for special characters
         if (childIndex < 0)
         {
             switch (childIndex)
@@ -51,7 +53,7 @@ public class KeywordTrie implements Serializable
 
 
         }
-        //done if you've reached the end of the word, mark as completed
+        //done if you've reached the end of the word, mark as completed, add to frequency
         if (index == query.length() - 1)
         {
             Node child = node.children[childIndex];
@@ -61,8 +63,9 @@ public class KeywordTrie implements Serializable
                 child = node.children[childIndex];
             }
             child.setComplete(true);
+            child.frequency++;
             child.wordRepresented = new StringBuilder(currentQuery);
-            return;
+            return child;
         }
 
         //else read in the character, and go further into the trie
@@ -73,14 +76,15 @@ public class KeywordTrie implements Serializable
             nextNode = node.children[childIndex];
             //nextNode.wordRepresented.append(node.wordRepresented.append(query.charAt(index)));
         }
-        addQueryRec(query, ++index, nextNode);
+        return addQueryRec(query, ++index, nextNode);
+
     }
 
     /*********
      * INNER CLASS
      ********/
 
-    private class Node implements Serializable
+    public class Node implements Serializable
     {
         Node children[] = new Node[28];
         int frequency = 0;
@@ -90,8 +94,7 @@ public class KeywordTrie implements Serializable
 
         public Node()
         {
-            wordRepresented = new StringBuilder();
-            modifiedTo = new HashMap();
+            //modifiedTo = new HashMap();
         }
 
         public Node[] getChildren()
