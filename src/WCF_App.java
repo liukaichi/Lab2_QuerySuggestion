@@ -22,8 +22,8 @@ public class WCF_App {
     public static void main(String[] args) {
         try{
 
-            String w1="cinema"; //stemmed version of a word
-            String w2="movi"; //stemmed version of a word
+            String w1="pond"; //stemmed version of a word
+            String w2="fish"; //stemmed version of a word
 
 
             String myURL = "http://peacock.cs.byu.edu/CS453Proj2/?word1="+w1+"&word2="+w2;
