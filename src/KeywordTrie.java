@@ -1,7 +1,6 @@
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -181,7 +180,7 @@ public class KeywordTrie
         }
 
 
-        public Node[] getCompletedChildren()
+        public Node[] getCompletedChildren(String query)
         {
             ArrayList<Node> result = new ArrayList<>();
 
@@ -193,10 +192,25 @@ public class KeywordTrie
                     {
                         result.add(child);
                     }
-                    result.addAll(Arrays.asList(child.getCompletedChildren()));
+                    result.addAll(Arrays.asList(child.getCompletedChildren(query)));
                 }
             }
-            return result.toArray(new Node[0]);
+            /*System.out.println(result.size());
+            for (Iterator<Node> iter = result.listIterator(); iter.hasNext();)
+            {
+                if (new NodeComparator(query).getSuggestedRank(iter.next()) == 0)
+                {
+                    iter.remove();
+                }
+            }*/
+            /*if (result.size() > 8) {
+
+                result.sort(new NodeComparator(query));
+                return result.subList(0, Math.min(8, result.size())).toArray(new Node[0]);
+            }
+            else*/
+                return result.toArray(new Node[0]);
+            //return result.toArray(new Node[0]);
         }
 
         public String getWordRepresented()

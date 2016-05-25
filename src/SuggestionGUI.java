@@ -51,11 +51,9 @@ public class SuggestionGUI extends JFrame
                     KeywordTrie.Node node = Main.trie.findEntry(textToFind.trim());
 
                     if (node == null) return;
-                    KeywordTrie.Node[] suggestionNodes = node.getCompletedChildren();
+                    KeywordTrie.Node[] suggestionNodes = node.getCompletedChildren(textToFind);
 
                     Arrays.sort(suggestionNodes, new NodeComparator(textToFind));
-
-
 
                     for (int i = 0; i < Math.min(8, suggestionNodes.length); i++)
                     {

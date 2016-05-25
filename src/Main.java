@@ -44,8 +44,8 @@ public class Main
             if (dataFolder.isDirectory())
             {
                 // TODO: change this back!
-                //for (File file : dataFolder.listFiles())
-                File file = new File ("C:\\Users\\liukaichi\\Programming\\Query-Suggestion\\data\\Clean-Data-01.txt");
+                for (File file : dataFolder.listFiles())
+                //File file = new File ("C:\\Users\\liukaichi\\Programming\\Query-Suggestion\\data\\Clean-Data-01.txt");
                 {
                     System.out.println("Reading file " + file.getPath());
                     Scanner scanner = new Scanner(new BufferedInputStream(new FileInputStream(file)));
