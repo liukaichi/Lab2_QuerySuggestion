@@ -13,43 +13,35 @@
 //The program needs Jsoup library
 
 import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-public class WCF_App {
+public class WCF_App
+{
+    PorterStemmer stemmer = new PorterStemmer();
+    public double compare(String string1, String string2) throws IOException
+    {
 
+        String w1 = stemmer.stem(string1); //stemmed version of a word
+        String w2 = stemmer.stem(string2); //stemmed version of a word
 
-    public static void main(String[] args) {
-        try{
+        String myURL = "http://peacock.cs.byu.edu/CS453Proj2/?word1=" + w1 + "&word2=" + w2;
 
-            String w1="pond"; //stemmed version of a word
-            String w2="fish"; //stemmed version of a word
+        //System.out.println("Fetching content: " + myURL);
 
+        Document pageDoc = Jsoup.connect(myURL).get();
+        String htmlContent = pageDoc.html();
+        Document contentDoc = Jsoup.parse(htmlContent);
+        String contentVal = contentDoc.body().text();
 
-            String myURL = "http://peacock.cs.byu.edu/CS453Proj2/?word1="+w1+"&word2="+w2;
+        //System.out.println(contentVal);
 
-            System.out.println("Fetching content: "+myURL);
+        Double val = Double.parseDouble(contentVal);
 
-            Document pageDoc = Jsoup.connect(myURL).get();
-            String htmlContent = pageDoc.html();
-            Document contentDoc = Jsoup.parse(htmlContent);
-            String contentVal = contentDoc.body().text();
-
-            System.out.println(contentVal);
-
-            Double val= Double.parseDouble(contentVal);
-
-            System.out.println(val);
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        return val;
     }
-
 }
-
 ////OUTPUT BELOW:
 /*
 Fetching content: http://peacock.cs.byu.edu/CS453Proj2/?word1=cinema&word2=movi

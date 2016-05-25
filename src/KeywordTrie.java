@@ -21,6 +21,7 @@ public class KeywordTrie
 
     public Node findEntry(String word)
     {
+        if (word == "") return null;
         return findEntryRec(word, 0, rootNode);
     }
 
@@ -116,7 +117,7 @@ public class KeywordTrie
      * INNER CLASS
      ********/
 
-    public class Node implements Comparable<Node>
+    public class Node
     {
         Node children[] = new Node[28];
         int frequency = 0;
@@ -203,11 +204,7 @@ public class KeywordTrie
             return wordRepresented;
         }
 
-        @Override public int compareTo(Node o)
-        {
-            if (this.frequency == o.frequency) return 0;
-            return this.frequency > o.frequency ? -1 : 1;
-        }
+
     }
 
 }
