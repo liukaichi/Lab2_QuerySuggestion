@@ -4,6 +4,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by liukaichi on 5/24/2016.
@@ -32,18 +34,16 @@ public class SuggestionGUI extends JFrame
                 {
                     KeywordTrie.Node node = Main.trie.findEntry(queryField.getText().trim());
                     KeywordTrie.Node[] suggestionNodes = node.getCompletedChildren();
-
-                    ArrayList<String> suggestions = new ArrayList<String>();
-                    for (KeywordTrie.Node suggestionNode : suggestionNodes)
-                    {
-                        suggestions.add(suggestionNode.getWordRepresented());
-                    }
+                    Arrays.sort(suggestionNodes);
 
                     String result = "";
-                    for (String suggestion : suggestions)
+
+                    for (int i = 0; i < Math.min(8, suggestionNodes.length); i++)
                     {
-                        result += suggestion + "\n";
+                        result += suggestionNodes[i].getWordRepresented() + " " + suggestionNodes[i].frequency + "\n";
                     }
+
+
                     suggestionsBox.setText(result);
                 }
                 super.keyTyped(e);
